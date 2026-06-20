@@ -1,6 +1,8 @@
+import smtplib
 import pandas as pd
 import os.path as path
 from requests import get
+from email.message import EmailMessage
 
 # Flag to indicate if the IP address has changed and variable to store the last observed IP address
 ip_changed = False
@@ -40,6 +42,31 @@ else:
 
 # Set is_current to False for all other IP addresses
 ip_address_history.loc[ip_address_history['ip_address'] != current_ip, 'is_current'] = False
+
+# If the IP address has changed, send an email notification
+if ip_changed:
+    # Load email credentials from .env file
+    with open('.env') as f:
+        env_vars = dict(line.strip().split('=') for line in f if '=' in line)
+    sender_email = env_vars.get('sender_email')
+    app_password = env_vars.get('app_password')
+
+    # Load recipient email list from file
+    with open('recipient_emails.txt') as f:
+        recipient_emails = [line.strip() for line in f if line.strip()]
+
+    # Create email message
+    msg = EmailMessage()
+    msg['Subject'] = 'IP Address Change Alert'
+    msg['From'] = sender_email
+    msg.set_content(f'The IP address has changed to {current_ip}. Previous value was {last_observed_ip}.')
+
+    # Send email to each recipient in the list
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(sender_email, app_password)
+        for recipient in recipient_emails:
+            msg['To'] = recipient
+            smtp.send_message(msg)
 
 # Save ip_address_history to csv
 ip_address_history.to_csv('ip_address_history.csv', index=False)
