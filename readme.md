@@ -1,0 +1,6 @@
+# IP Address Check and Notification
+
+## About
+Over the past few months I've gotten into self-hosting some services on a home server machine and occasionally like to access it when I'm away from home without exposing too many ports to the open internet and creating a large potential attack surface on my home network. With my current setup I host a Wireguard VPN that I can connect to using my phone, but my ISP gives out dynamic IP addresses and I wanted to create a process that will monitor my public IP and provide an email alert if that changes so I can always have the current value if I need to connect while away. 
+
+Requesting a static IP from my ISP would be another option, but I'm currently in an apartment with at least a couple moves I can already see in my future so I feel like this will be a longer lasting solution that also comes with the benefit of being able to add emails to the list so any friends or family that I create VPN profiles for will also be able to self-service updating their Wireguard config files in the event they need to connect to the Minecraft server I host while I'm not available to assist them directly.
